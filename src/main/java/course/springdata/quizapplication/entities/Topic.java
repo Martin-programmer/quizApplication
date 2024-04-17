@@ -20,4 +20,9 @@ public class Topic {
     private String topicName;
     @OneToMany(mappedBy = "topic",targetEntity = Question.class)
     private Set<Question> questions;
+
+    public void addQuestion(Question question){
+        this.questions.add(question);
+        question.setTopic(this);
+    }
 }
