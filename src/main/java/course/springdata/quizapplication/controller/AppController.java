@@ -31,9 +31,9 @@ public class AppController implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("Type Admin or User to login/register");
-        Role role = Role.valueOf(bufferedReader.readLine().trim().toUpperCase());
-        processLoginOrRegister(role);
+//        System.out.println("Type Admin or User to login/register");
+//        Role role = Role.valueOf(bufferedReader.readLine().trim().toUpperCase());
+//        processLoginOrRegister(role);
     }
 
     private void processLoginOrRegister(Role role) throws Exception {
