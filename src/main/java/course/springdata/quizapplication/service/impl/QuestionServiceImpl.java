@@ -52,4 +52,9 @@ public class QuestionServiceImpl implements QuestionService {
     public List<Question> getAllQuestions() {
         return questionRepository.findAll();
     }
+
+    @Override
+    public Set<Question> getQuestionsByTopicName(String topicName) {
+        return questionRepository.findQuestionsByTopic_TopicName(topicName);
+    }
 }

@@ -4,6 +4,7 @@ import course.springdata.quizapplication.entities.Question;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 public interface QuestionService {
 
@@ -12,4 +13,6 @@ public interface QuestionService {
     Question getQuestionById(Long id);
 
     List<Question> getAllQuestions();
+
+    Set<Question> getQuestionsByTopicName(String topicName);
 }
