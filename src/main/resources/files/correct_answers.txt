@@ -1,0 +1,60 @@
+Ottawa/1
+Russia/2
+Amazon/3
+Vatican City/4
+Tanzania/5
+Venice/6
+Japan/7
+Sahara/8
+Italy/9
+Lake Baikal/10
+George Washington/11
+1912/12
+Assassination of Archduke Franz Ferdinand/13
+Thomas Jefferson/14
+Egyptians/15
+American Civil War/16
+1989/17
+Qin Shi Huang/18
+French Revolution/19
+Macedonian Empire/20
+Carbon dioxide/21
+Au/22
+Mercury/23
+Diamond/24
+Hydrogen/25
+Three/26
+Gravity/27
+Nitrogen/28
+Albert Einstein/29
+22 months/30
+11/31
+Greece/32
+Soccer/33
+Margaret Court/34
+Sumo wrestling/35
+Snowboarding/36
+Germany/37
+300/38
+Gymnastics/39
+United States/40
+James Cameron/41
+Star Wars/42
+Jurassic Park/43
+2001/44
+Daniel Craig/45
+Avatar/46
+Parasite/47
+Arendelle/48
+Tom Hanks/49
+The Terminator/50
+George Orwell/51
+Hogwarts/52
+Arthur Conan Doyle/53
+Moby Dick/54
+The Hunger Games/55
+Jane Austen/56
+The Fellowship of the Ring/57
+Edgar Allan Poe/58
+F. Scott Fitzgerald/59
+The Nickel Boys by Colson Whitehead/60

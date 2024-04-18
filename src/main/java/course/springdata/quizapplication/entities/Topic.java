@@ -21,7 +21,6 @@ public class Topic {
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Question> questions = new HashSet<>();
 
-    // Avoid including relationship in toString, hashCode, and equals
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

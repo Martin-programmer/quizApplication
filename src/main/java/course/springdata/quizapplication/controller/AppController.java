@@ -6,10 +6,7 @@ import course.springdata.quizapplication.entities.Topic;
 import course.springdata.quizapplication.entities.User;
 import course.springdata.quizapplication.enums.Command;
 import course.springdata.quizapplication.enums.Role;
-import course.springdata.quizapplication.service.AdminService;
-import course.springdata.quizapplication.service.QuestionService;
-import course.springdata.quizapplication.service.TopicService;
-import course.springdata.quizapplication.service.UserService;
+import course.springdata.quizapplication.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,16 +24,17 @@ public class AppController implements CommandLineRunner {
     private final BufferedReader bufferedReader;
     private final PasswordEncoder passwordEncoder;
     private final TopicService topicService;
-
     private final QuestionService questionService;
+    private final CorrectAnswerService correctAnswerService;
 
     @Autowired
     public AppController(AdminService adminService, UserService userService,TopicService topicService,
-                         QuestionService questionService, PasswordEncoder passwordEncoder) {
+                         QuestionService questionService, CorrectAnswerService correctAnswerService, PasswordEncoder passwordEncoder) {
         this.adminService = adminService;
         this.userService = userService;
         this.topicService = topicService;
         this.questionService = questionService;
+        this.correctAnswerService = correctAnswerService;
         this.bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         this.passwordEncoder = passwordEncoder;
     }
@@ -44,6 +42,10 @@ public class AppController implements CommandLineRunner {
     @Transactional
     @Override
     public void run(String... args) throws Exception {
+
+        topicService.seedTopics();
+        questionService.seedQuestions();
+        correctAnswerService.seedCorrectAnswers();
         //SEED QUESTIONS AND THEIR TOPICS AND TEST THEM
 //        topicService.seedTopics();
 //        questionService.seedQuestions();

@@ -18,7 +18,9 @@ public class Question {
     @JoinColumn(name = "topic_id")
     private Topic topic;
 
-    // Avoid including relationship in toString, hashCode, and equals
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "correct_answer_id")
+    private CorrectAnswer correctAnswer;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
