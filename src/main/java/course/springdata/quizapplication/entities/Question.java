@@ -3,6 +3,9 @@ package course.springdata.quizapplication.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "questions")
 @Getter @Setter
@@ -21,6 +24,10 @@ public class Question {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "correct_answer_id")
     private CorrectAnswer correctAnswer;
+
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<WrongAnswer> wrongAnswers = new HashSet<>(); // Initialize the set here
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -32,5 +39,10 @@ public class Question {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public void addWrongAnswer(WrongAnswer wa) {
+        wrongAnswers.add(wa);
+        wa.setQuestion(this);
     }
 }

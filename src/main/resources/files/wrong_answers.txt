@@ -1,0 +1,180 @@
+Toronto/1
+Montreal/1
+Vancouver/1
+Canada/2
+China/2
+United States/2
+Nile/3
+Yangtze/3
+Mississippi/3
+Monaco/4
+Nauru/4
+San Marino/4
+Kenya/5
+Uganda/5
+Ethiopia/5
+Amsterdam/6
+Bangkok/6
+Bruges/6
+China/7
+Thailand/7
+South Korea/7
+Kalahari/8
+Gobi/8
+Sonoran/8
+France/9
+Spain/9
+Germany/9
+Lake Superior/10
+Lake Tanganyika/10
+Lake Victoria/10
+Thomas Jefferson/11
+John Adams/11
+Benjamin Franklin/11
+1910/12
+1914/12
+1905/12
+Invasion of Poland/13
+Berlin Conference/13
+Assassination of Abraham Lincoln/13
+George Washington/14
+Benjamin Franklin/14
+John Adams/14
+Greeks/15
+Romans/15
+Babylonians/15
+Revolutionary War/16
+World War I/16
+French and Indian War/16
+1987/17
+1991/17
+1985/17
+Emperor Wu/18
+Kublai Khan/18
+Sun Yat-sen/18
+American Revolution/19
+Industrial Revolution/19
+Russian Revolution/19
+Roman Empire/20
+Ottoman Empire/20
+Persian Empire/20
+Oxygen/21
+Nitrogen/21
+Hydrogen/21
+Ag/22
+Ga/22
+Ge/22
+Venus/23
+Earth/23
+Mars/23
+Quartz/24
+Topaz/24
+Ruby/24
+Oxygen/25
+Helium/25
+Nitrogen/25
+One/26
+Two/26
+Four/26
+Centrifugal force/27
+Magnetic force/27
+Electromagnetic force/27
+Oxygen/28
+Carbon dioxide/28
+Hydrogen/28
+Isaac Newton/29
+Nikola Tesla/29
+Stephen Hawking/29
+12 months/30
+18 months/30
+24 months/30
+10/31
+12/31
+9/31
+Italy/32
+France/32
+United Kingdom/32
+Basketball/33
+Baseball/33
+Tennis/33
+Serena Williams/34
+Steffi Graf/34
+Martina Navratilova/34
+Karate/35
+Baseball/35
+Judo/35
+Surfing/36
+Skateboarding/36
+BMX/36
+Brazil/37
+Spain/37
+Argentina/37
+200/38
+250/38
+100/38
+Diving/39
+Cheerleading/39
+Dance/39
+China/40
+Japan/40
+Russia/40
+Steven Spielberg/41
+Martin Scorsese/41
+Ridley Scott/41
+Star Trek/42
+Blade Runner/42
+The Matrix/42
+King Kong/43
+Lost/43
+The Beach/43
+2000/44
+1999/44
+2002/44
+Sean Connery/45
+Pierce Brosnan/45
+Roger Moore/45
+Titanic/46
+Avengers: Endgame/46
+Star Wars: The Force Awakens/46
+1917/47
+The Irishman/47
+Joker/47
+Corona/48
+DunBroch/48
+Genovia/48
+Brad Pitt/49
+Jim Carrey/49
+Johnny Depp/49
+Die Hard/50
+Rambo/50
+Total Recall/50
+Aldous Huxley/51
+Ray Bradbury/51
+Philip K. Dick/51
+Beauxbatons/52
+Durmstrang/52
+Ilvermorny/52
+Agatha Christie/53
+Edgar Allan Poe/53
+H.G. Wells/53
+The Great Gatsby/54
+Don Quixote/54
+Oliver Twist/54
+Divergent/55
+Brave New World/55
+The Maze Runner/55
+Emily Brontë/56
+Charlotte Brontë/56
+Mary Shelley/56
+The Two Towers/57
+The Return of the King/57
+The Silmarillion/57
+Robert Frost/58
+Walt Whitman/58
+T.S. Eliot/58
+Ernest Hemingway/59
+John Steinbeck/59
+William Faulkner/59
+The Underground Railroad by Colson Whitehead/60
+All the Light We Cannot See by Anthony Doerr/60
+The Goldfinch by Donna Tartt/60

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -26,15 +27,18 @@ public class AppController implements CommandLineRunner {
     private final TopicService topicService;
     private final QuestionService questionService;
     private final CorrectAnswerService correctAnswerService;
+    private final WrongAnswerService wrongAnswerService;
 
     @Autowired
     public AppController(AdminService adminService, UserService userService,TopicService topicService,
-                         QuestionService questionService, CorrectAnswerService correctAnswerService, PasswordEncoder passwordEncoder) {
+                         QuestionService questionService, CorrectAnswerService correctAnswerService,
+                         WrongAnswerService wrongAnswerService, PasswordEncoder passwordEncoder) {
         this.adminService = adminService;
         this.userService = userService;
         this.topicService = topicService;
         this.questionService = questionService;
         this.correctAnswerService = correctAnswerService;
+        this.wrongAnswerService = wrongAnswerService;
         this.bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         this.passwordEncoder = passwordEncoder;
     }
@@ -42,10 +46,21 @@ public class AppController implements CommandLineRunner {
     @Transactional
     @Override
     public void run(String... args) throws Exception {
-
         topicService.seedTopics();
         questionService.seedQuestions();
+        wrongAnswerService.seedWrongAnswers();
         correctAnswerService.seedCorrectAnswers();
+        List<Question> allQuestions = questionService.getAllQuestions();
+        allQuestions
+                .forEach(question -> {
+                    System.out.println("-------------------------------------------------");
+                    System.out.println(question.getTopic().getTopicName());
+                    System.out.println(question.getQuestion());
+                    System.out.println(question.getCorrectAnswer().getCorrectAnswer());
+                    question.getWrongAnswers().forEach(wrong -> System.out.println(wrong.getWrongAnswer()));
+                    System.out.println("-------------------------------------------------");
+                });
+
         //SEED QUESTIONS AND THEIR TOPICS AND TEST THEM
 //        topicService.seedTopics();
 //        questionService.seedQuestions();
