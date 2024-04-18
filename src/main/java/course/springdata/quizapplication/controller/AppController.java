@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -40,12 +41,19 @@ public class AppController implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     @Override
     public void run(String... args) throws Exception {
-        topicService.seedTopics();
-        questionService.seedQuestions();
+        //SEED QUESTIONS AND THEIR TOPICS AND TEST THEM
+//        topicService.seedTopics();
+//        questionService.seedQuestions();
+//        Question questionById = questionService.getQuestionById(1L);
+//        System.out.println(questionById.getQuestion());
+//        System.out.println(questionById.getTopic().getTopicName());
+//        Topic topicById = topicService.getTopicById(1L);
+//        topicById.getQuestions().forEach(question -> System.out.println(question.getQuestion()));
 
-        System.out.println();
+        //LOGIN/REGISTER
 //        System.out.println("Type Admin or User to login/register");
 //        Role role = Role.valueOf(bufferedReader.readLine().trim().toUpperCase());
 //        processLoginOrRegister(role);

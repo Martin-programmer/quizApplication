@@ -25,22 +25,26 @@ public class QuestionServiceImpl implements QuestionService {
     private TopicService topicService;
     @Override
     public void seedQuestions() throws IOException {
-        if (questionRepository.count() != 0){
+        if (questionRepository.count() != 0) {
             return;
         }
         String[] fileContent = fileUtil.readFileContent("src/main/resources/files/questions.txt");
+        Arrays.stream(fileContent).forEach(row -> {
+            String[] tokens = row.split("/");
+            String questionToAdd = tokens[0];
+            long topicId = Long.parseLong(tokens[1]);
+            Topic topic = topicService.getTopicById(topicId);
+            if (topic != null) {
+                Question question = new Question();
+                question.setQuestion(questionToAdd);
+                topic.addQuestion(question); // This automatically sets the topic in the question
+                questionRepository.save(question); // Saves the question and updates the topic due to cascade
+            }
+        });
+    }
 
-        Arrays.stream(fileContent)
-                .forEach(row -> {
-                    String[] tokens = row.split("/");
-                    String questionToAdd = tokens[0];
-                    long topicId = Long.parseLong(tokens[1]);
-                    Question question = new Question();
-                    question.setQuestion(questionToAdd);
-                    Topic topic = topicService.getTopicById(topicId);
-                    question.setTopic(topic);
-//                    topic.addQuestion(question);
-                    questionRepository.saveAndFlush(question);
-                });
+    @Override
+    public Question getQuestionById(Long id) {
+        return questionRepository.findQuestionById(id);
     }
 }
