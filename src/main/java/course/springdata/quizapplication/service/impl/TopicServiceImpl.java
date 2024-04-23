@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class TopicServiceImpl implements TopicService {
@@ -34,5 +35,10 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public Topic getTopicById(Long id) {
         return topicRepository.getTopicById(id);
+    }
+
+    @Override
+    public List<Topic> getAllTopics() {
+        return topicRepository.findAll();
     }
 }

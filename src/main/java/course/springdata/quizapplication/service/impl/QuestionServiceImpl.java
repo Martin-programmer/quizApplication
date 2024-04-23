@@ -57,4 +57,28 @@ public class QuestionServiceImpl implements QuestionService {
     public Set<Question> getQuestionsByTopicName(String topicName) {
         return questionRepository.findQuestionsByTopic_TopicName(topicName);
     }
+
+    @Override
+    public Set<Question> getTenRandomQuestions() {
+        Set<Question> questions = new HashSet<>();
+        int questionCount = 10;
+        Random random = new Random();
+        List<Topic> topics = topicService.getAllTopics();
+        while (questionCount > 0){
+        for (Topic topic : topics) {
+                String topicName = topic.getTopicName();
+                List<Question> questionsByTopicTopicName = questionRepository.findQuestionsByTopic_TopicName(topicName).stream().toList();
+                int count = random.nextInt(2)+1;
+                for (int i = 0; i < count; i++) {
+                    int index = random.nextInt(questionsByTopicTopicName.size());
+                    questions.add(questionsByTopicTopicName.get(index));
+                    questionCount--;
+                    if (questionCount == 0){
+                        return questions;
+                    }
+                }
+            }
+        }
+        return questions;
+    }
 }

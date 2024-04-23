@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -48,4 +51,10 @@ public class UserServiceImpl implements UserService {
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+    @Override
+    public List<User> getTopFiveUsers() {
+        return userRepository.findAllUsersOrderByPoints().stream().limit(5).collect(Collectors.toList());
+    }
+
 }

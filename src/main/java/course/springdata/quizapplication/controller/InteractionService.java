@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -27,6 +28,8 @@ public class InteractionService {
     private final WrongAnswerService wrongAnswerService;
     private final BufferedReader bufferedReader;
     private final PasswordEncoder passwordEncoder;
+    private User user;
+    private String email = "";
 
     @Autowired
     public InteractionService(UserService userService, AdminService adminService, TopicService topicService,
@@ -40,6 +43,7 @@ public class InteractionService {
         this.wrongAnswerService = wrongAnswerService;
         this.bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         this.passwordEncoder = passwordEncoder;
+        this.user = null;
     }
 
     public void seedData() throws IOException {
@@ -63,17 +67,31 @@ public class InteractionService {
     }
 
     private boolean handleCredentialsInput(Role role, Command command) throws IOException {
-        System.out.println("Enter your first name, last name, email, and password (separated by '/'): ");
+        if (command == Command.LOGIN){
+            System.out.println("Enter your email and password (separated by '/'): ");
+        }else{
+            System.out.println("Enter your first name, last name, email, and password (separated by '/'): ");
+        }
         String input = bufferedReader.readLine();
         String[] tokens = input.split("/");
-        if (tokens.length < 4) {
+        if (tokens.length < 2) {
             System.out.println("Invalid input format. Please ensure you provide all required details.");
             return false;
         }
-        String firstName = tokens[0].trim();
-        String lastName = tokens[1].trim();
-        String email = tokens[2].trim();
-        String password = tokens[3].trim();
+        String firstName = "";
+        String lastName = "";
+        String email = "";
+        String password = "";
+        if (command == Command.LOGIN){
+            email = tokens[0].trim();
+            password = tokens[1].trim();
+        }else if (command == Command.REGISTER){
+            firstName = tokens[0].trim();
+            lastName = tokens[1].trim();
+            email = tokens[2].trim();
+            password = tokens[3].trim();
+        }
+
         return command == Command.LOGIN ? performLogin(role, email, password) :
                 performRegistration(role, firstName, lastName, email, password);
     }
@@ -84,45 +102,74 @@ public class InteractionService {
     }
 
     public void handleGameplay() throws IOException {
-        System.out.println("Type PLAY if you want to play or type STATS to see your statistics!");
+        System.out.println("Type PLAY if you want to play or type STATS to see your statistics" +
+                " or TOP to see top 5 players!");
+        user = userService.getUserByEmail(this.email);
         String command = bufferedReader.readLine();
-        //TODO make stats
-        if (command.equals("PLAY")){
-            System.out.println("Choose topic of your questions!");
-            System.out.println("You can play all, world geography, history, science and nature, " +
-                    "sports, movies and entertainment, literature");
-            System.out.println("Type your selection: ");
-            String selection = bufferedReader.readLine();
-            if (selection.equals("all")){
-                //TODO:
-            }else{
-                Set<Question> questionsByTopicName = questionService.getQuestionsByTopicName(selection);
-                questionsByTopicName
-                        .forEach(question -> {
-                            System.out.println("-------------------------------------------------");
-                            System.out.println(question.getQuestion());
-                            String correctAnswer = question.getCorrectAnswer().getCorrectAnswer();
-                            Set<String> answers = new HashSet<>();
-                            answers.add(correctAnswer);
-                            Set<WrongAnswer> wrongAnswers = question.getWrongAnswers();
-                            for (WrongAnswer wrongAnswer : wrongAnswers) {
-                                answers.add(wrongAnswer.getWrongAnswer());
-                            }
-                            answers.forEach(System.out::println);
-                            try {
-                                System.out.print("Your answer: ");
-                                String userAnswer = bufferedReader.readLine();
-                                if (userAnswer.equals(correctAnswer)){
-                                    System.out.println("CORRECT ANSWER");
-                                }else{
-                                    System.out.println("WRONG ANSWER");
+        while (!command.equals("END")){
+            if (command.equals("PLAY")){
+                System.out.println("Choose topic of your questions!");
+                System.out.println("You can play all, world geography, history, science and nature, " +
+                        "sports, movies and entertainment, literature");
+                System.out.println("Type your selection: ");
+                String selection = bufferedReader.readLine();
+                Set<Question> questions = new HashSet<>();
+                if (selection.equals("all")){
+                    questions.addAll(questionService.getTenRandomQuestions());
+                }else {
+                    questions.addAll(questionService.getQuestionsByTopicName(selection));
+                }
+                    questions
+                            .forEach(question -> {
+                                System.out.println("-------------------------------------------------");
+                                System.out.println(question.getQuestion());
+                                String correctAnswer = question.getCorrectAnswer().getCorrectAnswer();
+                                Set<String> answers = new HashSet<>();
+                                answers.add(correctAnswer);
+                                Set<WrongAnswer> wrongAnswers = question.getWrongAnswers();
+                                for (WrongAnswer wrongAnswer : wrongAnswers) {
+                                    answers.add(wrongAnswer.getWrongAnswer());
                                 }
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        });
+                                answers.forEach(System.out::println);
+                                try {
+                                    System.out.print("Your answer: ");
+                                    String userAnswer = bufferedReader.readLine();
+                                    if (userAnswer.equals(correctAnswer)){
+                                        System.out.println("CORRECT ANSWER");
+                                        user.setPoints(user.getPoints() + 1);
+                                    }else{
+                                        System.out.println("WRONG ANSWER");
+                                        System.out.println(correctAnswer);
+                                    }
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            });
+                getStatistics();
+            } else if (command.equals("STATS")) {
+                getStatistics();
+            } else if (command.equals("TOP")) {
+                List<User> topFiveUsers = userService.getTopFiveUsers();
+                for (int i = 1; i <= topFiveUsers.size(); i++) {
+                    User currentUser = topFiveUsers.get(i - 1);
+                    System.out.println("--------------------------------------");
+                    System.out.printf("%d. Name: %s%nPoints: %s%n",i, currentUser.getFirstName(),currentUser.getPoints());
+                }
+                System.out.println("--------------------------------------");
             }
+            System.out.println("Type END if you want to stop program.");
+            System.out.println("Type PLAY if you want to play or type STATS to see your statistics!");
+            command = bufferedReader.readLine();
         }
+    }
+
+    private void getStatistics() {
+        System.out.println("--------------------------------------");
+        System.out.printf("First name: %s%n",user.getFirstName());
+        System.out.printf("Last name: %s%n",user.getLastName());
+        System.out.printf("Email: %s%n",user.getEmail());
+        System.out.printf("Points: %s%n",user.getPoints());
+        System.out.println("--------------------------------------");
     }
 
     private boolean performLogin(Role role, String email, String password) {
@@ -132,6 +179,7 @@ public class InteractionService {
         } else if (role == Role.USER) {
             success = userService.loginUser(email, password);
         }
+        this.email = email;
         return success;
     }
 
@@ -142,6 +190,7 @@ public class InteractionService {
         } else if (role == Role.USER) {
             success = userService.registerUser(new User(firstName, lastName, email, passwordEncoder.encode(password)));
         }
+        this.email = email;
         return success;
     }
 }

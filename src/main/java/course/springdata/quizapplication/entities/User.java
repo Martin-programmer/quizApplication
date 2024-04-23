@@ -24,4 +24,6 @@ public class User{
     private String email;
     @NonNull
     private String password;
+    private double points = 0;
+
 }

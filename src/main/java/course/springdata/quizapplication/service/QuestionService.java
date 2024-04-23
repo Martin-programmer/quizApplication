@@ -15,4 +15,6 @@ public interface QuestionService {
     List<Question> getAllQuestions();
 
     Set<Question> getQuestionsByTopicName(String topicName);
+
+    Set<Question> getTenRandomQuestions();
 }
