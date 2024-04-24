@@ -105,8 +105,12 @@ public class InteractionService {
             switch (command) {
                 case "PLAY" -> {
                     System.out.println("Choose topic of your questions!");
-                    System.out.println("You can play all, world geography, history, science and nature, " +
-                            "sports, movies and entertainment, literature");
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("You can play: {all, ");
+                    topicService.getAllTopics().forEach(topic -> sb.append(topic.getTopicName()).append(", "));
+                    sb.delete(sb.length()-2, sb.length());
+                    sb.append("}");
+                    System.out.println(sb);
                     System.out.println("Type your selection: ");
                     String selection = bufferedReader.readLine();
                     Set<Question> questions = new HashSet<>();
@@ -164,48 +168,86 @@ public class InteractionService {
     }
 
     public void handleAdminPanel() throws IOException {
-        System.out.println("Type END if you want to stop program, or type anything to continue!");
-        while (!bufferedReader.readLine().equals("END")){
-            System.out.println("Type 'ADD' to add new question.");
-            String command = bufferedReader.readLine();
-            List<Topic> allTopics = topicService.getAllTopics();
-            System.out.println("Topics: ");
-            allTopics.forEach(topic -> System.out.println(topic.getTopicName()));
-            System.out.println("Is topic of your question in our game? Answer (y/n)");
-            command = bufferedReader.readLine();
-            Topic topic = null;
-            if (command.equals("y")){
-                System.out.println("Type name of your topic!");
-                topic = topicService.getTopicByTopicName(bufferedReader.readLine());
-            } else if (command.equals("n")) {
-                System.out.println("You need to add topic of your question to continue.");
-                System.out.println("Type topic of your question. Example: (sports)");
-                String topicName = bufferedReader.readLine();
-                topic = new Topic();
-                topic.setTopicName(topicName);
-                topicService.addNewTopic(topic);
-            }
-            System.out.println("Type your question: ");
-            String questionName = bufferedReader.readLine();
-            Question question = new Question();
-            question.setQuestion(questionName);
-            questionService.addNewQuestion(question,topic);
-            System.out.println("Type correct answer of your question: ");
-            String correctAnswerName = bufferedReader.readLine();
-            CorrectAnswer correctAnswer = new CorrectAnswer();
-            correctAnswer.setCorrectAnswer(correctAnswerName);
-            correctAnswerService.addNewCorrectAnswer(question,correctAnswer);
-            System.out.println("Now you need to add 3 wrong answers!");
-            for (int i = 0; i < 3; i++) {
-                System.out.println("Type wrong answer: ");
-                WrongAnswer wrongAnswer = new WrongAnswer();
-                wrongAnswer.setWrongAnswer(bufferedReader.readLine());
-                wrongAnswerService.addNewWrongAnswer(question,wrongAnswer);
-            }
-            System.out.println("Your question is successfully added!");
-            System.out.println("Type END if you want to stop program, or type anything to continue!");
+        printInstructions();
+        String input;
+        while (!(input = readInput()).equals("END")) {
+            handleCommand(input);
+            printInstructions();
         }
     }
+
+    private void printInstructions() {
+        System.out.println("Type 'END' to stop the program, or type 'ADD' to add a new question.");
+    }
+
+    private String readInput() throws IOException {
+        return bufferedReader.readLine().trim();
+    }
+
+    private void handleCommand(String command) throws IOException {
+        if ("ADD".equals(command)) {
+            addQuestionProcess();
+        } else {
+            System.out.println("Invalid command. Please type 'ADD' to add a new question or 'END' to exit.");
+        }
+    }
+
+    private void addQuestionProcess() throws IOException {
+        Topic topic = handleTopic();
+        Question question = createQuestion(topic);
+        addAnswers(question);
+        System.out.println("Your question is successfully added!");
+    }
+
+    private Topic handleTopic() throws IOException {
+        List<Topic> allTopics = topicService.getAllTopics();
+        allTopics.forEach(topic -> System.out.println(topic.getTopicName()));
+
+        System.out.println("Is the topic of your question listed above? Answer (y/n)");
+        String response = readInput();
+
+        if ("y".equalsIgnoreCase(response)) {
+            System.out.println("Type the name of your topic!");
+            return topicService.getTopicByTopicName(readInput());
+        } else if ("n".equalsIgnoreCase(response)) {
+            return createNewTopic();
+        } else {
+            System.out.println("Invalid response. Assuming 'no'.");
+            return createNewTopic();
+        }
+    }
+
+    private Topic createNewTopic() throws IOException {
+        System.out.println("Type the name of the new topic:");
+        Topic topic = new Topic();
+        topic.setTopicName(readInput());
+        topicService.addNewTopic(topic);
+        return topic;
+    }
+
+    private Question createQuestion(Topic topic) throws IOException {
+        System.out.println("Type your question:");
+        Question question = new Question();
+        question.setQuestion(readInput());
+        questionService.addNewQuestion(question,topic);
+        return question;
+    }
+
+    private void addAnswers(Question question) throws IOException {
+        System.out.println("Type the correct answer for your question:");
+        CorrectAnswer correctAnswer = new CorrectAnswer();
+        correctAnswer.setCorrectAnswer(readInput());
+        correctAnswerService.addNewCorrectAnswer(question, correctAnswer);
+
+        System.out.println("Now you need to add 3 wrong answers.");
+        for (int i = 0; i < 3; i++) {
+            System.out.println("Type wrong answer " + (i + 1) + ":");
+            WrongAnswer wrongAnswer = new WrongAnswer();
+            wrongAnswer.setWrongAnswer(readInput());
+            wrongAnswerService.addNewWrongAnswer(question, wrongAnswer);
+        }
+    }
+
 
     private void getTopFivePlayers() {
         List<User> topFiveUsers = userService.getTopFiveUsers();
