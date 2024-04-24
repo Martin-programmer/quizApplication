@@ -16,6 +16,7 @@ public class Authentication {
     private final AdminService adminService;
     private final PasswordEncoder passwordEncoder;
     private final InputHandler inputHandler;
+    private String email = "";
 
     @Autowired
     public Authentication(UserService userService, AdminService adminService, PasswordEncoder passwordEncoder, InputHandler inputHandler){
@@ -40,6 +41,7 @@ public class Authentication {
     }
 
     public boolean performLogin(Role role, String email, String password) {
+        this.email = email;
         if (role == Role.ADMIN) {
             return adminService.loginAdmin(email, password);
         } else if (role == Role.USER) {
@@ -50,11 +52,15 @@ public class Authentication {
 
     public boolean performRegistration(Role role, String firstName, String lastName, String email, String password) {
         String encodedPassword = passwordEncoder.encode(password);
+        this.email = email;
         if (role == Role.ADMIN) {
             return adminService.registerAdmin(new Admin(firstName, lastName, email, encodedPassword));
         } else if (role == Role.USER) {
             return userService.registerUser(new User(firstName, lastName, email, encodedPassword));
         }
         return false;
+    }
+    public String getEmail(){
+        return this.email;
     }
 }

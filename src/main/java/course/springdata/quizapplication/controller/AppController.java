@@ -13,12 +13,15 @@ public class AppController implements CommandLineRunner {
     private final InteractionService interactionService;
     private final Authentication authentication;
     private final AdminPanel adminPanel;
+    private final UserPanel userPanel;
 
     @Autowired
-    public AppController(InteractionService interactionService, Authentication authentication, AdminPanel adminPanel) {
+    public AppController(InteractionService interactionService, Authentication authentication, AdminPanel adminPanel,
+                         UserPanel userPanel) {
         this.interactionService = interactionService;
         this.authentication = authentication;
         this.adminPanel = adminPanel;
+        this.userPanel = userPanel;
     }
 
     @Transactional
@@ -27,7 +30,7 @@ public class AppController implements CommandLineRunner {
         interactionService.seedData();
         Role role = authentication.authenticateUser();
         if (role == Role.USER) {
-            interactionService.handleGameplay();
+            userPanel.handleGameplay(authentication.getEmail());
         }else{
             adminPanel.handleAdminPanel();
         }
