@@ -44,4 +44,11 @@ public class CorrectAnswerServiceImpl implements CorrectAnswerService {
             }
         });
     }
+
+    @Override
+    public void addNewCorrectAnswer(Question question, CorrectAnswer correctAnswer) {
+        question.setCorrectAnswer(correctAnswer);
+        correctAnswer.setQuestion(question);
+        correctAnswerRepository.saveAndFlush(correctAnswer);
+    }
 }

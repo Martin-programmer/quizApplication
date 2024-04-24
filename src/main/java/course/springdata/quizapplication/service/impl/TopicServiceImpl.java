@@ -33,6 +33,10 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    public void addNewTopic(Topic topic) {
+        topicRepository.saveAndFlush(topic);
+    }
+    @Override
     public Topic getTopicById(Long id) {
         return topicRepository.getTopicById(id);
     }
@@ -41,4 +45,10 @@ public class TopicServiceImpl implements TopicService {
     public List<Topic> getAllTopics() {
         return topicRepository.findAll();
     }
+
+    @Override
+    public Topic getTopicByTopicName(String topicName) {
+        return topicRepository.getTopicByTopicName(topicName);
+    }
+
 }

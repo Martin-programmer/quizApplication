@@ -11,4 +11,8 @@ public interface TopicService {
     Topic getTopicById(Long id);
 
     List<Topic> getAllTopics();
+
+    Topic getTopicByTopicName(String topicName);
+
+    void addNewTopic(Topic topic);
 }

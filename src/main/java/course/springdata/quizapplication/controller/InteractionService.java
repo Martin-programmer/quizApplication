@@ -1,9 +1,6 @@
 package course.springdata.quizapplication.controller;
 
-import course.springdata.quizapplication.entities.Admin;
-import course.springdata.quizapplication.entities.Question;
-import course.springdata.quizapplication.entities.User;
-import course.springdata.quizapplication.entities.WrongAnswer;
+import course.springdata.quizapplication.entities.*;
 import course.springdata.quizapplication.enums.Command;
 import course.springdata.quizapplication.enums.Role;
 import course.springdata.quizapplication.service.*;
@@ -14,9 +11,7 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class InteractionService {
@@ -107,60 +102,119 @@ public class InteractionService {
         user = userService.getUserByEmail(this.email);
         String command = bufferedReader.readLine();
         while (!command.equals("END")){
-            if (command.equals("PLAY")){
-                System.out.println("Choose topic of your questions!");
-                System.out.println("You can play all, world geography, history, science and nature, " +
-                        "sports, movies and entertainment, literature");
-                System.out.println("Type your selection: ");
-                String selection = bufferedReader.readLine();
-                Set<Question> questions = new HashSet<>();
-                if (selection.equals("all")){
-                    questions.addAll(questionService.getTenRandomQuestions());
-                }else {
-                    questions.addAll(questionService.getQuestionsByTopicName(selection));
-                }
+            switch (command) {
+                case "PLAY" -> {
+                    System.out.println("Choose topic of your questions!");
+                    System.out.println("You can play all, world geography, history, science and nature, " +
+                            "sports, movies and entertainment, literature");
+                    System.out.println("Type your selection: ");
+                    String selection = bufferedReader.readLine();
+                    Set<Question> questions = new HashSet<>();
+                    if (selection.equals("all")) {
+                        questions.addAll(questionService.getTenRandomQuestions());
+                    } else {
+                        questions.addAll(questionService.getQuestionsByTopicName(selection));
+                    }
                     questions
                             .forEach(question -> {
                                 System.out.println("-------------------------------------------------");
                                 System.out.println(question.getQuestion());
                                 String correctAnswer = question.getCorrectAnswer().getCorrectAnswer();
-                                Set<String> answers = new HashSet<>();
+                                List<String> answers = new ArrayList<>();
                                 answers.add(correctAnswer);
                                 Set<WrongAnswer> wrongAnswers = question.getWrongAnswers();
                                 for (WrongAnswer wrongAnswer : wrongAnswers) {
                                     answers.add(wrongAnswer.getWrongAnswer());
                                 }
-                                answers.forEach(System.out::println);
+                                Collections.shuffle(answers);
+                                //65 to 68 ASCII SYMBOLS
+                                char symbol = 65;
+                                char correctSymbol = 'z';
+                                for (String answer : answers) {
+                                    if (answer.equals(correctAnswer)) {
+                                        correctSymbol = symbol;
+                                    }
+                                    System.out.printf("%c: %s%n", symbol, answer);
+                                    symbol++;
+                                }
                                 try {
                                     System.out.print("Your answer: ");
                                     String userAnswer = bufferedReader.readLine();
-                                    if (userAnswer.equals(correctAnswer)){
+                                    if (userAnswer.charAt(0) == correctSymbol) {
                                         System.out.println("CORRECT ANSWER");
                                         user.setPoints(user.getPoints() + 1);
-                                    }else{
+                                    } else {
                                         System.out.println("WRONG ANSWER");
-                                        System.out.println(correctAnswer);
+                                        System.out.println("Right answer is: " + correctAnswer);
                                     }
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
                             });
-                getStatistics();
-            } else if (command.equals("STATS")) {
-                getStatistics();
-            } else if (command.equals("TOP")) {
-                List<User> topFiveUsers = userService.getTopFiveUsers();
-                for (int i = 1; i <= topFiveUsers.size(); i++) {
-                    User currentUser = topFiveUsers.get(i - 1);
-                    System.out.println("--------------------------------------");
-                    System.out.printf("%d. Name: %s%nPoints: %s%n",i, currentUser.getFirstName(),currentUser.getPoints());
+                    getStatistics();
                 }
-                System.out.println("--------------------------------------");
+                case "STATS" -> getStatistics();
+                case "TOP" -> getTopFivePlayers();
             }
             System.out.println("Type END if you want to stop program.");
-            System.out.println("Type PLAY if you want to play or type STATS to see your statistics!");
+            System.out.println("Type PLAY if you want to play or type STATS to see your statistics" +
+                    " or TOP to see top 5 players!");
             command = bufferedReader.readLine();
         }
+    }
+
+    public void handleAdminPanel() throws IOException {
+        System.out.println("Type END if you want to stop program, or type anything to continue!");
+        while (!bufferedReader.readLine().equals("END")){
+            System.out.println("Type 'ADD' to add new question.");
+            String command = bufferedReader.readLine();
+            List<Topic> allTopics = topicService.getAllTopics();
+            System.out.println("Topics: ");
+            allTopics.forEach(topic -> System.out.println(topic.getTopicName()));
+            System.out.println("Is topic of your question in our game? Answer (y/n)");
+            command = bufferedReader.readLine();
+            Topic topic = null;
+            if (command.equals("y")){
+                System.out.println("Type name of your topic!");
+                topic = topicService.getTopicByTopicName(bufferedReader.readLine());
+            } else if (command.equals("n")) {
+                System.out.println("You need to add topic of your question to continue.");
+                System.out.println("Type topic of your question. Example: (sports)");
+                String topicName = bufferedReader.readLine();
+                topic = new Topic();
+                topic.setTopicName(topicName);
+                topicService.addNewTopic(topic);
+            }
+            System.out.println("Type your question: ");
+            String questionName = bufferedReader.readLine();
+            Question question = new Question();
+            question.setQuestion(questionName);
+            questionService.addNewQuestion(question,topic);
+            System.out.println("Type correct answer of your question: ");
+            String correctAnswerName = bufferedReader.readLine();
+            CorrectAnswer correctAnswer = new CorrectAnswer();
+            correctAnswer.setCorrectAnswer(correctAnswerName);
+            correctAnswerService.addNewCorrectAnswer(question,correctAnswer);
+            System.out.println("Now you need to add 3 wrong answers!");
+            for (int i = 0; i < 3; i++) {
+                System.out.println("Type wrong answer: ");
+                WrongAnswer wrongAnswer = new WrongAnswer();
+                wrongAnswer.setWrongAnswer(bufferedReader.readLine());
+                wrongAnswerService.addNewWrongAnswer(question,wrongAnswer);
+            }
+            System.out.println("Your question is successfully added!");
+            System.out.println("Type END if you want to stop program, or type anything to continue!");
+        }
+    }
+
+    private void getTopFivePlayers() {
+        List<User> topFiveUsers = userService.getTopFiveUsers();
+        for (int i = 1; i <= topFiveUsers.size(); i++) {
+            User currentUser = topFiveUsers.get(i - 1);
+            System.out.println("--------------------------------------");
+            System.out.printf("%d. Name: %s%nPoints: %s%n",i, currentUser.getFirstName(),currentUser.getPoints());
+        }
+        System.out.println("--------------------------------------");
     }
 
     private void getStatistics() {
@@ -182,6 +236,8 @@ public class InteractionService {
         this.email = email;
         return success;
     }
+
+
 
     private boolean performRegistration(Role role, String firstName, String lastName, String email, String password) {
         boolean success = false;

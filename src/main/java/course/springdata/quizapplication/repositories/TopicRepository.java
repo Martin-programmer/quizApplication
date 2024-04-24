@@ -11,4 +11,5 @@ public interface TopicRepository extends JpaRepository<Topic,Long> {
     Topic getTopicById(Long id);
 
     List<Topic> findAll();
+    Topic getTopicByTopicName(String topicName);
 }

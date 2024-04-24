@@ -42,4 +42,11 @@ public class WrongAnswerServiceImpl implements WrongAnswerService {
             }
         });
     }
+
+    @Override
+    public void addNewWrongAnswer(Question question, WrongAnswer wrongAnswer) {
+        wrongAnswer.setQuestion(question);
+        question.addWrongAnswer(wrongAnswer);
+        wrongAnswerRepository.saveAndFlush(wrongAnswer);
+    }
 }

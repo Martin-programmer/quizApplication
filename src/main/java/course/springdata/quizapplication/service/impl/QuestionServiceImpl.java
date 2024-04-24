@@ -42,6 +42,11 @@ public class QuestionServiceImpl implements QuestionService {
             }
         });
     }
+    @Override
+    public void addNewQuestion(Question question, Topic topic) {
+        topic.addQuestion(question);
+        questionRepository.saveAndFlush(question);
+    }
 
     @Override
     public Question getQuestionById(Long id) {
@@ -81,4 +86,5 @@ public class QuestionServiceImpl implements QuestionService {
         }
         return questions;
     }
+
 }

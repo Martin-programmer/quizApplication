@@ -21,6 +21,10 @@ public class AppController implements CommandLineRunner {
         interactionService.seedData();
         Role role = interactionService.promptForRole();
         interactionService.processLoginOrRegister(role);
-        interactionService.handleGameplay();
+        if (role == Role.USER) {
+            interactionService.handleGameplay();
+        }else{
+            interactionService.handleAdminPanel();
+        }
     }
 }

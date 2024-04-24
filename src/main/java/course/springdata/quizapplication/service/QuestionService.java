@@ -1,6 +1,7 @@
 package course.springdata.quizapplication.service;
 
 import course.springdata.quizapplication.entities.Question;
+import course.springdata.quizapplication.entities.Topic;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,4 +18,6 @@ public interface QuestionService {
     Set<Question> getQuestionsByTopicName(String topicName);
 
     Set<Question> getTenRandomQuestions();
+
+    void addNewQuestion(Question question, Topic topic);
 }
