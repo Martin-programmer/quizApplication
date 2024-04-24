@@ -1,8 +1,6 @@
 package course.springdata.quizapplication.controller;
 
 import course.springdata.quizapplication.entities.*;
-import course.springdata.quizapplication.enums.Command;
-import course.springdata.quizapplication.enums.Role;
 import course.springdata.quizapplication.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,28 +14,24 @@ import java.util.*;
 @Component
 public class InteractionService {
     private final UserService userService;
-    private final AdminService adminService;
     private final TopicService topicService;
     private final QuestionService questionService;
     private final CorrectAnswerService correctAnswerService;
     private final WrongAnswerService wrongAnswerService;
     private final BufferedReader bufferedReader;
-    private final PasswordEncoder passwordEncoder;
     private User user;
     private String email = "";
 
     @Autowired
-    public InteractionService(UserService userService, AdminService adminService, TopicService topicService,
+    public InteractionService(UserService userService, TopicService topicService,
                               QuestionService questionService, CorrectAnswerService correctAnswerService,
-                              WrongAnswerService wrongAnswerService, PasswordEncoder passwordEncoder) {
+                              WrongAnswerService wrongAnswerService) {
         this.userService = userService;
-        this.adminService = adminService;
         this.topicService = topicService;
         this.questionService = questionService;
         this.correctAnswerService = correctAnswerService;
         this.wrongAnswerService = wrongAnswerService;
         this.bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        this.passwordEncoder = passwordEncoder;
         this.user = null;
     }
 
@@ -46,54 +40,6 @@ public class InteractionService {
         questionService.seedQuestions();
         wrongAnswerService.seedWrongAnswers();
         correctAnswerService.seedCorrectAnswers();
-    }
-
-    public Role promptForRole() throws IOException {
-        System.out.println("Type Admin or User to login/register");
-        return Role.valueOf(bufferedReader.readLine().trim().toUpperCase());
-    }
-
-    public void processLoginOrRegister(Role role) throws Exception {
-        Command command = promptForCommand("Login for existing account or Register for new one!");
-        boolean success = false;
-        while (!success) {
-            success = handleCredentialsInput(role, command);
-        }
-    }
-
-    private boolean handleCredentialsInput(Role role, Command command) throws IOException {
-        if (command == Command.LOGIN){
-            System.out.println("Enter your email and password (separated by '/'): ");
-        }else{
-            System.out.println("Enter your first name, last name, email, and password (separated by '/'): ");
-        }
-        String input = bufferedReader.readLine();
-        String[] tokens = input.split("/");
-        if (tokens.length < 2) {
-            System.out.println("Invalid input format. Please ensure you provide all required details.");
-            return false;
-        }
-        String firstName = "";
-        String lastName = "";
-        String email = "";
-        String password = "";
-        if (command == Command.LOGIN){
-            email = tokens[0].trim();
-            password = tokens[1].trim();
-        }else if (command == Command.REGISTER){
-            firstName = tokens[0].trim();
-            lastName = tokens[1].trim();
-            email = tokens[2].trim();
-            password = tokens[3].trim();
-        }
-
-        return command == Command.LOGIN ? performLogin(role, email, password) :
-                performRegistration(role, firstName, lastName, email, password);
-    }
-
-    private Command promptForCommand(String message) throws IOException {
-        System.out.println(message);
-        return Command.valueOf(bufferedReader.readLine().trim().toUpperCase());
     }
 
     public void handleGameplay() throws IOException {
@@ -268,27 +214,4 @@ public class InteractionService {
         System.out.println("--------------------------------------");
     }
 
-    private boolean performLogin(Role role, String email, String password) {
-        boolean success = false;
-        if (role == Role.ADMIN) {
-            success = adminService.loginAdmin(email, password);
-        } else if (role == Role.USER) {
-            success = userService.loginUser(email, password);
-        }
-        this.email = email;
-        return success;
-    }
-
-
-
-    private boolean performRegistration(Role role, String firstName, String lastName, String email, String password) {
-        boolean success = false;
-        if (role == Role.ADMIN) {
-            success = adminService.registerAdmin(new Admin(firstName, lastName, email, passwordEncoder.encode(password)));
-        } else if (role == Role.USER) {
-            success = userService.registerUser(new User(firstName, lastName, email, passwordEncoder.encode(password)));
-        }
-        this.email = email;
-        return success;
-    }
 }
