@@ -1,6 +1,7 @@
 package course.springdata.quizapplication.controller;
 
 import course.springdata.quizapplication.controller.authentication.Authentication;
+import course.springdata.quizapplication.entities.Admin;
 import course.springdata.quizapplication.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -11,11 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class AppController implements CommandLineRunner {
     private final InteractionService interactionService;
     private final Authentication authentication;
+    private final AdminPanel adminPanel;
 
     @Autowired
-    public AppController(InteractionService interactionService, Authentication authentication) {
+    public AppController(InteractionService interactionService, Authentication authentication, AdminPanel adminPanel) {
         this.interactionService = interactionService;
         this.authentication = authentication;
+        this.adminPanel = adminPanel;
     }
 
     @Transactional
@@ -26,7 +29,7 @@ public class AppController implements CommandLineRunner {
         if (role == Role.USER) {
             interactionService.handleGameplay();
         }else{
-            interactionService.handleAdminPanel();
+            adminPanel.handleAdminPanel();
         }
     }
 }
