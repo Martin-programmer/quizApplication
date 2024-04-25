@@ -6,6 +6,7 @@ import course.springdata.quizapplication.enums.Command;
 import course.springdata.quizapplication.enums.Role;
 import course.springdata.quizapplication.service.AdminService;
 import course.springdata.quizapplication.service.UserService;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ public class Authentication {
     private final AdminService adminService;
     private final PasswordEncoder passwordEncoder;
     private final InputHandler inputHandler;
+    @Getter
     private String email = "";
 
     @Autowired
@@ -59,8 +61,5 @@ public class Authentication {
             return userService.registerUser(new User(firstName, lastName, email, encodedPassword));
         }
         return false;
-    }
-    public String getEmail(){
-        return this.email;
     }
 }

@@ -1,27 +1,21 @@
 package course.springdata.quizapplication.controller;
 
-import course.springdata.quizapplication.entities.*;
 import course.springdata.quizapplication.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.*;
 
 @Component
-public class InteractionService {
+public class Data {
     private final TopicService topicService;
     private final QuestionService questionService;
     private final CorrectAnswerService correctAnswerService;
     private final WrongAnswerService wrongAnswerService;
 
     @Autowired
-    public InteractionService(TopicService topicService,
-                              QuestionService questionService, CorrectAnswerService correctAnswerService,
-                              WrongAnswerService wrongAnswerService) {
+    public Data(TopicService topicService,
+                QuestionService questionService, CorrectAnswerService correctAnswerService,
+                WrongAnswerService wrongAnswerService) {
         this.topicService = topicService;
         this.questionService = questionService;
         this.correctAnswerService = correctAnswerService;
