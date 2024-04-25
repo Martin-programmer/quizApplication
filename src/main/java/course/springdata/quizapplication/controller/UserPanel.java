@@ -1,6 +1,7 @@
 package course.springdata.quizapplication.controller;
 
 import course.springdata.quizapplication.entities.Question;
+import course.springdata.quizapplication.entities.Topic;
 import course.springdata.quizapplication.entities.User;
 import course.springdata.quizapplication.entities.WrongAnswer;
 import course.springdata.quizapplication.service.*;
@@ -47,6 +48,20 @@ public class UserPanel {
                     System.out.println(sb);
                     System.out.println("Type your selection: ");
                     String selection = bufferedReader.readLine();
+                    boolean isSelectedTopicInTopics = false;
+                    while (!isSelectedTopicInTopics){
+                        for (Topic topic : topicService.getAllTopics()) {
+                            if (topic.getTopicName().equals(selection)) {
+                                isSelectedTopicInTopics = true;
+                                break;
+                            }
+                        }
+                        if (!isSelectedTopicInTopics){
+                        System.out.println("This topic does not exists in game. Please try again!");
+                        System.out.println(sb);
+                        selection = bufferedReader.readLine();
+                        }
+                    }
                     Set<Question> questions = new HashSet<>();
                     if (selection.equals("all")) {
                         questions.addAll(questionService.getTenRandomQuestions());
@@ -68,16 +83,30 @@ public class UserPanel {
                                 //65 to 68 ASCII SYMBOLS
                                 char symbol = 65;
                                 char correctSymbol = 'z';
+                                StringBuilder allAnswers = new StringBuilder();
                                 for (String answer : answers) {
                                     if (answer.equals(correctAnswer)) {
                                         correctSymbol = symbol;
                                     }
-                                    System.out.printf("%c: %s%n", symbol, answer);
+                                    if (symbol == 'D'){
+                                        allAnswers.append(String.format("%c: %s", symbol, answer));
+                                    }else {
+                                        allAnswers.append(String.format("%c: %s%n", symbol, answer));
+                                    }
                                     symbol++;
                                 }
+                                System.out.println(allAnswers);
                                 try {
                                     System.out.print("Your answer: ");
                                     String userAnswer = bufferedReader.readLine();
+                                    while (!(userAnswer.equals("A") || userAnswer.equals("B") || userAnswer.equals("C")
+                                    || userAnswer.equals("D"))){
+                                        System.err.println("You answer should be: A, B, C or D!");
+                                        System.out.println(question.getQuestion());
+                                        System.out.println(allAnswers);
+                                        System.out.print("Your answer: ");
+                                        userAnswer = bufferedReader.readLine();
+                                    }
                                     if (userAnswer.charAt(0) == correctSymbol) {
                                         System.out.println("CORRECT ANSWER");
                                         user.setPoints(user.getPoints() + 1);
@@ -89,7 +118,6 @@ public class UserPanel {
                                     throw new RuntimeException(e);
                                 }
                             });
-                    getStatistics();
                 }
                 case "STATS" -> getStatistics();
                 case "TOP" -> getTopFivePlayers();
